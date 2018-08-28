@@ -31,3 +31,22 @@ Or you can clone or download the library files.
 **We recommend you [use composer](http://getcomposer.org/).**
 
 This library depends on PHP modules for JSON. See [JSON module installation instructions](http://php.net/manual/en/json.installation.php).
+
+## Usage Example
+Require the package through composer's autoload file or directly as above.
+In the textsync client editor set the auth endpoint as the php file with the contents as below and fill out the keys and locator details from the pusher dash. 
+
+```php
+$textsync = new Textsync\Textsync([
+  'instance_locator' => 'your:instance:locator',
+  'key' => 'your:key'
+]);
+if (!isset($_POST['docId'])) die("Document id not specified");
+if (true) { //Decide here what permissions this user might have for this doc id
+    $auth_data = $textsync->authenticate([ 'docId' => $_POST['docId'], 'permissions' => ['READ','WRITE'], 'tokenExpiry' => 1200]);
+}
+if ($auth_data['status'] != 200) throw new Exception("Error authorizing");
+header("Access-Control-Allow-Origin: *");
+header('Content-type: application/json');
+echo json_encode($auth_data['body']);
+```
